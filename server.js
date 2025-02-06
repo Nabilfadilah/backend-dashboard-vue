@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const sequelize = require("./config/database");
 const aboutRoutes = require("./routes/aboutRoutes");
+const peminjamanRoutes = require("./routes/peminjamanRoutes");
 
 // Import model agar Sequelize mengenali tabel
 const peminjaman = require("./models/peminjaman");
@@ -11,6 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/about", aboutRoutes);
+app.use("/api/loan", peminjamanRoutes);
 
 // sequelize.sync({ force: false }).then(() => {
 //     console.log("Database & tables created!");
