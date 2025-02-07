@@ -1,7 +1,21 @@
 const express = require("express");
 const peminjaman = require("../models/peminjaman");
+const multer = require("multer");
+const path = require("path");
 
 const router = express.Router();
+
+// Konfigurasi Multer penyimpanan file di folder 'uploads'
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/"); // pastikan folder uploads sudah ada
+  },
+  filename: function (req, file, cb) {
+    // gunakan timestamp + ekstensi asli file
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+const upload = multer({ storage });
 
 // get all peminjaman data
 router.get("/", async (req, res) => {
@@ -26,25 +40,32 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-// add new data
-router.post("/", async (req, res) => {
+// add new data (dengan upload file)
+router.post("/", upload.single("image"), async (req, res) => {
     try {
       const { name, email, address, phone, type_motor, loan_date, loan_end_date, total_paid} = req.body;
-      const newPeminjaman = await peminjaman.create({ name, email, address, phone, type_motor, loan_date, loan_end_date, total_paid });
+      
+      const image = req.file ? req.file.filename : null;
+      
+      const newPeminjaman = await peminjaman.create({ name, email, address, phone, type_motor, loan_date, loan_end_date, total_paid, image });
       res.json(newPeminjaman);
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
 });
 
-// update data
-router.put("/:id", async (req, res) => {
+// update data (dengan upload file, optional)
+router.put("/:id", upload.single("image"), async (req, res) => {
     try {
       const { name, email, address, phone, type_motor, loan_date, loan_end_date, total_paid } = req.body;
-      const updated = await peminjaman.update(
-        { name, email, address, phone, type_motor, loan_date, loan_end_date, total_paid },
-        { where: { id: req.params.id } }
-      );
+      
+      const updateData = { name, email, address, phone, type_motor, loan_date, loan_end_date, total_paid };
+      // Jika ada file upload, perbarui kolom image
+      if (req.file) {
+        updateData.image = req.file.filename;
+      }
+      const updated = await peminjaman.update(updateData, { where: { id: req.params.id } });
+
       if (!updated[0]) {
         return res.status(404).json({ message: "Data not found" });
       }
