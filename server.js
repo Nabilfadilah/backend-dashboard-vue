@@ -1,15 +1,21 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const sequelize = require("./config/database");
 const aboutRoutes = require("./routes/aboutRoutes");
 const peminjamanRoutes = require("./routes/peminjamanRoutes");
 
 // Import model agar Sequelize mengenali tabel
-const peminjaman = require("./models/peminjaman");
+// const peminjaman = require("./models/peminjaman");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Servis file statis dari folder uploads
+app.use("/uploads", express.static("uploads"));
+// Konfigurasi penyajian file statis menggunakan path absolut
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/about", aboutRoutes);
 app.use("/api/loan", peminjamanRoutes);
