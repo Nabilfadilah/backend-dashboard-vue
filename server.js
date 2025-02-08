@@ -4,6 +4,7 @@ const path = require("path");
 const sequelize = require("./config/database");
 const aboutRoutes = require("./routes/aboutRoutes");
 const peminjamanRoutes = require("./routes/peminjamanRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 // Import model agar Sequelize mengenali tabel
 // const peminjaman = require("./models/peminjaman");
@@ -17,6 +18,7 @@ app.use("/uploads", express.static("uploads"));
 // Konfigurasi penyajian file statis menggunakan path absolut
 // app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+app.use("/api/auth", authRoutes);
 app.use("/api/about", aboutRoutes);
 app.use("/api/loan", peminjamanRoutes);
 
