@@ -5,6 +5,8 @@ const sequelize = require("./config/database");
 const aboutRoutes = require("./routes/aboutRoutes");
 const peminjamanRoutes = require("./routes/peminjamanRoutes");
 const authRoutes = require("./routes/authRoutes");
+const motorRoutes = require("./routes/motorRoutes");
+const pengaturanRoutes = require("./routes/pengaturanRoutes");
 
 // Import model agar Sequelize mengenali tabel
 // const peminjaman = require("./models/peminjaman");
@@ -21,6 +23,8 @@ app.use("/uploads", express.static("uploads"));
 app.use("/api/auth", authRoutes);
 app.use("/api/about", aboutRoutes);
 app.use("/api/loan", peminjamanRoutes);
+app.use("/api/motor", motorRoutes);
+app.use("/api/setting", pengaturanRoutes);
 
 // sequelize.sync({ force: false }).then(() => {
 //     console.log("Database & tables created!");
